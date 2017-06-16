@@ -1,0 +1,137 @@
+int temperatura = 0; //variable para la temperatura
+int tempPuente;
+int fan = 8; //pin digital donde conectar el ventildor
+int pir = 2;  // pin 2 va a la señal del sensor de movimiento
+int pir_lectura;
+String input = "";
+boolean control = false;
+void setup(){
+  pinMode(13,OUTPUT);
+  pinMode(fan,OUTPUT);//configuracion del pin 8
+  pinMode(pir, INPUT);  // Configurar pir como entrada o INPUT  
+  Serial.begin(9600);
+  
+  
+}
+
+void funcionamiento(){
+  
+  while(Serial.available()>0||tempPuente>0){
+    digitalWrite(13, HIGH);
+    //Calcula la temperatura usando como referencia 5v
+    temperatura = (int) (5.0 * analogRead(0)*100.0)/1023.0;
+    Serial.print("Temperatura actual: ");
+    Serial.println(temperatura); //escribe la temperatura en el serial
+    Serial.println("");
+    delay (5000); //espera 5 segundos para la siguiente medicion
+    pir_lectura = digitalRead(pir);
+    if(temperatura>tempPuente){
+      Serial.println("Temperatura alta");
+      if (pir_lectura == HIGH) {
+        digitalWrite(fan, LOW);
+        Serial.println("Hay movimiento");
+        Serial.println("");
+      }
+      else 
+      {
+        digitalWrite(fan, HIGH);
+        Serial.println("No hay movimiento");
+        Serial.println("");
+      }
+    }
+    else
+    {
+      digitalWrite(fan, HIGH);
+      Serial.println("Temperatura baja");
+      Serial.println("");
+    }  
+  }
+}
+
+int conversor(){
+  
+  //Serial.println("Entra conversor");
+  int resultado = 0;
+  while(Serial.available()){
+    char caracterEntrada = Serial.read();
+    //Serial.print("Caracter de entrada: ");
+    //Serial.println(caracterEntrada);
+    switch (caracterEntrada){
+      //Serial.println("Entra switch");
+      case '0':
+          // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+          input += caracterEntrada;
+          //Serial.println("Entra 0");
+         break; 
+      case '1':
+          // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+           input += caracterEntrada;
+           //Serial.println("Entra 1");
+        break; 
+      case '2':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 2");
+        break; 
+      case '3':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 3");
+        break; 
+      case '4':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 4");
+        break; 
+      case '5':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 5");
+        break; 
+      case '6':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 6");
+        break; 
+      case '7':
+             // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada; 
+            //Serial.println("Entra 7");
+        break;
+      case '8':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 8"); 
+        break;
+      case '9':
+            // Aqui el caracter no es una nueva linea, con lo cual lo  introducimos en el String
+            input += caracterEntrada;
+            //Serial.println("Entra 9"); 
+        break;
+    }
+   }
+   resultado = input.toInt();
+   control = true;
+  return resultado;
+}
+
+void loop(){
+ //input=Serial.read();
+
+ while(Serial.available()){
+     tempPuente = conversor();
+     //Serial.print("La temperatura String: ");
+     //Serial.println(input);
+     
+     
+     
+ }
+ delay(3000);
+ if(control == true){
+     Serial.print("La temperatura indicada es: ");
+     Serial.println(tempPuente);
+     Serial.println("");
+    input = "";
+    funcionamiento();
+ }
+}
